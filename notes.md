@@ -54,3 +54,45 @@ export class UsersModule {}
 ```
 
 DEPENDENCY INJECTION:
+
+What is dependency injection?
+DI = Giving (injecting) an object its dependencies instead of creating them manually inside the class.
+NestJS automatically provides dependencies via the constructor.
+
+- Imagine you're building a CarService class
+
+- To drive the car, you need an engine - but instead of building the engine yourself, someone gives you
+  a ready-made engine.
+
+- That 'someone' is NestJS - this is called dependency injection
+
+In technical terms:
+DI is a design pattern where a class (like CarService) does not create its own dependencies (like EngineService) - instead NestJS
+inject these dependencies into it.
+
+WITHOUT DI (BAD):
+
+```ts
+export class CarService {
+  private engine = new EngineService(); // tight coupling, hard to test and change
+}
+```
+
+WITH DI:
+
+```ts
+@injectable()
+export class CarService {
+  constructor(private engine: EngineService) {} // DI - EngineService injected
+}
+```
+
+WHY DI IS IMPORTANT:
+
+1. Loose coupling: The class doesn't care where the dependency comes from - just that it works
+
+2. Easier to test: You can inject a fake or mock dependency during testing
+
+3. Easier to maintain: You can replace a service easily without changing the dependent class
+
+4. Separation of concerns: Each class focuses only on its own work - not the creation of dependencies
