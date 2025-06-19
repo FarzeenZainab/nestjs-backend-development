@@ -96,3 +96,68 @@ WHY DI IS IMPORTANT:
 3. Easier to maintain: You can replace a service easily without changing the dependent class
 
 4. Separation of concerns: Each class focuses only on its own work - not the creation of dependencies
+
+HOW DI WORKS IN NESTJS (BEHIND THE SCENES):
+NestJS uses a dependency injection container:
+
+Step 1: You mark a class as injectable()
+Step 2: You register it in Module providers
+Step 3: NestJS builds that class and saves it in the container
+Step 4: When another class needs it, NestJS gives the ready-made version from the container
+
+HOW NESTJS DECIDES WHAT TO INJECT? (IMPORTANT)
+
+- By Type in constructor:
+  NestJS looks at the type declared in the constructor to know what to inject
+
+```ts
+  constructor(private engine: EngineService){}
+```
+
+- The container checks:
+  "Do I have an EngineService in my providers? Yes? Ok - inject it"
+
+DI EXAMPLE EXPANDED: MULTIPLE SERVICES
+
+```ts
+@injectable()
+export class EngineService {
+  start() {
+    return `Engine started`;
+  }
+}
+
+@injectable()
+export class FuelService {
+  getFuel() {
+    return `Fuel Added`;
+  }
+}
+
+@injectable
+class CarService {
+  constructor(
+    private engine: EngineService,
+    private fuel: FuelService,
+  ) {}
+
+  drive() {
+    return `${this.fuel.getFuel()} - ${this.engine.start()} - Car driving`;
+  }
+}
+```
+
+```pgsql
+NestJS injects both EngineService and FuelService into CarService automatically.
+Class marked as @Injectable()
+      ↓
+Added to Module's providers array
+      ↓
+NestJS creates instance (in DI container)
+      ↓
+Injects it into constructor of dependent class
+      ↓
+Ready to use (No manual 'new' needed!)
+```
+
+DO I NEED TO USE PRIVATE / PROTECTED KEYWORDS WHEN INJECTING DEPENDENCIES
