@@ -1,24 +1,24 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { TasksService } from './tasks.service';
+import { ITask } from './task.model';
 
-@Controller('tasks') // Each controller should have a route prefix
+@Controller('tasks')
 export class TasksController {
-  @Get() // This decorator defines a GET endpoint
-  public findAll(): string[] {
-    // this method returns an array of strings
-    return ['A', 'B', 'C', 'D', 'E'];
+  constructor(private readonly taskService: TasksService) {}
+
+  @Get()
+  public findAll(): ITask[] {
+    return this.taskService.findAll();
   }
 
-  @Get('/:id') // method decorator to handle dynamic routes
-  // The ':id' part of the route is a placeholder for a dynamic parameter
-  // The value of the "id" parameter will be passed to the method as part of the params object
-  // We have to use the @Param() decorator to access the dynamic parameter
-  // public findOne(@Param() params: any): string {
-  //   return `The number is ${params.id}`;
-  // }
+  @Get('/:id')
+  public findOne(@Param() params: { id: string }): ITask {
+    const task = this.taskService.findOne(params.id);
 
-  // instead of accessing the completing object inside params, we can use specific arguments which a 
-  // route give by defining the params as such:
-  public findOne(@Param('id') id: string) {
-    return `The id is ${id}`;
+    if (task) {
+      return task;
+    }
+
+    throw new NotFoundException();
   }
 }

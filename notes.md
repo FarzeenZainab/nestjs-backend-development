@@ -199,4 +199,19 @@ Question mark marks the paramter optional in route.
 
 NestJS will catch the id route if I hit '/tasks' becuase it matched this route first.
 
-### SERVICES:
+### SERVICES AND DTO FILES:
+```
+nest g servive service-name molue-name --no-spec --flat
+```
+
+The above command will create a service in the defined module with no spec file (test file) and --flat will not create another folder for the service. 
+
+Before working with services we should model the data to defined how the data should look like and how to work it. We can do it by creating a model file and define the structure of the data.
+
+Once we create a reusable service we can inject in our controller.
+
+A reusable service is useful to import and use business logic for example tasks in multiple controllers.
+
+This pattern isolates the business logic. 
+
+### ERROR HANDLING
