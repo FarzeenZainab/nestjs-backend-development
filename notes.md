@@ -161,3 +161,42 @@ Ready to use (No manual 'new' needed!)
 ```
 
 DO I NEED TO USE PRIVATE / PROTECTED KEYWORDS WHEN INJECTING DEPENDENCIES
+
+
+CONTROLLERS:
+Handles incoming requests and return responses.
+
+Method Decorators → @Get, @Post, @Delete, @Patch, @Put
+
+WORKING DYNAMIC ROUTES USING @PARAMS DECORATOR IN CONTROLLERS:
+When we want the clients access to a specific resource, whether to fetch this resource or to maybe delete it, we should use dynamic routes.
+
+It we return a collection, we can identify it as tasks. But if we want t a particular resource then the part after the last slash is a parameter is an argument → /tasks/11 to the route that needs to be dynamic.
+
+This, we need to somehow be able to define that route that will catch some specific parameted in a method decorator (@Get, @Post).
+
+```ts
+@Get('/:id')
+public findOne(@Param() params: any): string{
+  return params.id
+}
+```
+
+if we have only one parameter we can also write the method as such:
+
+```ts
+@Get('/:id')
+public findOne(@Params('id') id: string): string{
+  return id;
+}
+```
+
+CAVEATS:
+The order in with methods are defined in a controller matters.
+In NestJS you can also make parameters optional so that they don't have to be provided and the route will still be matched. So if we move the dynamic route to the top and make the id paramter optional then the response will not be what we expect.
+
+Question mark marks the paramter optional in route.
+
+NestJS will catch the id route if I hit '/tasks' becuase it matched this route first.
+
+### SERVICES:
