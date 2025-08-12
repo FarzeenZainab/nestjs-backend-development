@@ -215,3 +215,8 @@ A reusable service is useful to import and use business logic for example tasks 
 This pattern isolates the business logic. 
 
 ### ERROR HANDLING
+we need to deal with the errors occured during data processing, for example we need to thorw a not found exception when the data is not found. NestJS provides these exceptions and these are built into the system.
+
+NestJS by default has an exception filter when lets nest return meaningful response for unhandeled errors.
+
+We can also create our own exception filters for unhandled exceptions.  
