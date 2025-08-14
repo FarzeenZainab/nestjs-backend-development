@@ -161,3 +161,41 @@ Ready to use (No manual 'new' needed!)
 ```
 
 DO I NEED TO USE PRIVATE / PROTECTED KEYWORDS WHEN INJECTING DEPENDENCIES
+No, you don't have to use private or protected keywords when injecting dependencies in NestJS. However, it's a common practice to use them for encapsulation and to indicate that these dependencies should not be accessed outside the class.
+
+No, you don't have to - but you usually should
+
+Here's why:
+
+1. When you use `private` or `public` or `protected`
+
+```ts
+constructor(private engine: EngineService){}
+```
+
+You are doing two things at the same time:
+
+a. Asking NestJS to inject EngineService (DI)
+b. Automatically creating a class property called `this.engine` you can use inside the class
+
+2. What happens if you DON'T use private?
+
+- Nestjs will still inject EngineService - no error
+- But you won't have access to this.engine inside the class methods because you didn't store it as a class property
+
+Example - this will break:
+
+```ts
+drive() {
+  return this.engine.start(); // Error: 'engine' does not exist on 'this'
+}
+```
+
+3. When is it OK to skip `private`?
+   If you only need the dependency temporarily in the constructor and don't need to use it in other methods:
+
+```ts
+  constructor(engine: EngineService){
+    console.log(engine.start())
+  }
+```
