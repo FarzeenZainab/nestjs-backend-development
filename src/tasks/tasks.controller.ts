@@ -1,6 +1,7 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { ITask } from './task.model';
+import { CreateTaskDto } from './create-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -20,5 +21,14 @@ export class TasksController {
     }
 
     throw new NotFoundException();
+  }
+
+  @Post() // this and @Get may not have a unique URL but methods are different making both different
+  public create(@Body() createTaskDto: CreateTaskDto) {
+    return this.taskService.create({
+      title: 'asdf',
+      description: 'asdf',
+      status: 'OPEN',
+    });
   }
 }

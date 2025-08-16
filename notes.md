@@ -199,7 +199,7 @@ Question mark marks the paramter optional in route.
 
 NestJS will catch the id route if I hit '/tasks' becuase it matched this route first.
 
-### SERVICES AND DTO FILES:
+### SERVICES
 ```
 nest g servive service-name molue-name --no-spec --flat
 ```
@@ -220,3 +220,15 @@ we need to deal with the errors occured during data processing, for example we n
 NestJS by default has an exception filter when lets nest return meaningful response for unhandeled errors.
 
 We can also create our own exception filters for unhandled exceptions.  
+
+### WORKING WITH POST
+@Post decorator is used to create a post request for the controller. Used to save data in the DB. The data from the incoming request is accessed via the @Body() decorator.
+
+It is a good practice to send back the resource which is created to the controller. For example, when a new task is created with user can see the id of the generated resource because we are returning it to the controller.
+
+When a post request is successfull we should sent 201.
+
+### DTO FILES:
+DTO stands for "Data Transfer Object".
+
+When the data is coming from the requests we need to make sure that the data is according to the types defined in our backend and to do acheive this (converting data to defined types) we use DTO files.
