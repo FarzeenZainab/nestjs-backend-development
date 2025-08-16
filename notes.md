@@ -161,7 +161,44 @@ Ready to use (No manual 'new' needed!)
 ```
 
 DO I NEED TO USE PRIVATE / PROTECTED KEYWORDS WHEN INJECTING DEPENDENCIES
+No, you don't have to use private or protected keywords when injecting dependencies in NestJS. However, it's a common practice to use them for encapsulation and to indicate that these dependencies should not be accessed outside the class.
 
+No, you don't have to - but you usually should
+
+Here's why:
+
+1. When you use `private` or `public` or `protected`
+
+```ts
+constructor(private engine: EngineService){}
+```
+
+You are doing two things at the same time:
+
+a. Asking NestJS to inject EngineService (DI)
+b. Automatically creating a class property called `this.engine` you can use inside the class
+
+2. What happens if you DON'T use private?
+
+- Nestjs will still inject EngineService - no error
+- But you won't have access to this.engine inside the class methods because you didn't store it as a class property
+
+Example - this will break:
+
+```ts
+drive() {
+  return this.engine.start(); // Error: 'engine' does not exist on 'this'
+}
+```
+
+3. When is it OK to skip `private`?
+   If you only need the dependency temporarily in the constructor and don't need to use it in other methods:
+
+```ts
+  constructor(engine: EngineService){
+    console.log(engine.start())
+  }
+```
 
 CONTROLLERS:
 Handles incoming requests and return responses.
@@ -204,7 +241,7 @@ NestJS will catch the id route if I hit '/tasks' becuase it matched this route f
 nest g servive service-name molue-name --no-spec --flat
 ```
 
-The above command will create a service in the defined module with no spec file (test file) and --flat will not create another folder for the service. 
+The above command will create a service in the defined module with no spec file (test file) and --flat will not create another folder for the service.
 
 Before working with services we should model the data to defined how the data should look like and how to work it. We can do it by creating a model file and define the structure of the data.
 
@@ -212,14 +249,15 @@ Once we create a reusable service we can inject in our controller.
 
 A reusable service is useful to import and use business logic for example tasks in multiple controllers.
 
-This pattern isolates the business logic. 
+This pattern isolates the business logic.
 
 ### ERROR HANDLING
+
 we need to deal with the errors occured during data processing, for example we need to thorw a not found exception when the data is not found. NestJS provides these exceptions and these are built into the system.
 
 NestJS by default has an exception filter when lets nest return meaningful response for unhandeled errors.
 
-We can also create our own exception filters for unhandled exceptions.  
+We can also create our own exception filters for unhandled exceptions.
 
 ### WORKING WITH POST
 @Post decorator is used to create a post request for the controller. Used to save data in the DB. The data from the incoming request is accessed via the @Body() decorator.
@@ -232,3 +270,4 @@ When a post request is successfull we should sent 201.
 DTO stands for "Data Transfer Object".
 
 When the data is coming from the requests we need to make sure that the data is according to the types defined in our backend and to do acheive this (converting data to defined types) we use DTO files.
+
