@@ -237,6 +237,7 @@ Question mark marks the paramter optional in route.
 NestJS will catch the id route if I hit '/tasks' becuase it matched this route first.
 
 ### SERVICES
+
 ```
 nest g servive service-name molue-name --no-spec --flat
 ```
@@ -255,11 +256,12 @@ This pattern isolates the business logic.
 
 we need to deal with the errors occured during data processing, for example we need to thorw a not found exception when the data is not found. NestJS provides these exceptions and these are built into the system.
 
-NestJS by default has an exception filter when lets nest return meaningful response for unhandeled errors.
+NestJS by default has an exception filter which lets nest return meaningful response for unhandeled errors.
 
 We can also create our own exception filters for unhandled exceptions.
 
 ### WORKING WITH POST
+
 @Post decorator is used to create a post request for the controller. Used to save data in the DB. The data from the incoming request is accessed via the @Body() decorator.
 
 It is a good practice to send back the resource which is created to the controller. For example, when a new task is created with user can see the id of the generated resource because we are returning it to the controller.
@@ -267,7 +269,30 @@ It is a good practice to send back the resource which is created to the controll
 When a post request is successfull we should sent 201.
 
 ### DTO FILES:
+
 DTO stands for "Data Transfer Object".
 
 When the data is coming from the requests we need to make sure that the data is according to the types defined in our backend and to do acheive this (converting data to defined types) we use DTO files.
 
+### Working with Validation Pipes
+
+You should never trust any data coming in from the client. You should at least validate and check if it is correct according to your constraints for this data.
+
+In nest you've got this solved by the framework.
+
+It has integrated couple of concepts to make it super easy for you.
+
+To add a validation to the input data coming from the users you're going to use a validation pipe.
+
+It is actually a class which gets called before the data reaches the route handler.
+
+Their are typical two use cases:
+
+- We can transform the data like transform the type of the data.
+- validate if the data is valid. It is a declarative way of defining the constraints for the incoming data.
+
+The pipes can be globally registered in the main.ts file in the bootstrap function. Then you have to define the DTO file for route handler which will validate the incoming data before the data reaches the request handler.
+
+Incase of validation error, an exception will be thrown.
+
+We can start with configuring the validation pipe globally in the bootstrap function. This will validate the data

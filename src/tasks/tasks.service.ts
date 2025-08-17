@@ -15,12 +15,12 @@ export class TasksService {
     return this.tasks.find((task: ITask) => task.id === id);
   }
 
-  create(createTaskDto: CreateTaskDto): ITask {
+  create(taskData: CreateTaskDto): ITask {
     const task: ITask = {
       id: randomUUID(),
-      title: createTaskDto.title,
-      description: createTaskDto.description,
-      status: createTaskDto.status,
+      title: taskData.title,
+      description: taskData.description,
+      status: taskData.status,
     };
 
     this.tasks.push(task);

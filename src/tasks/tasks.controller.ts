@@ -24,11 +24,7 @@ export class TasksController {
   }
 
   @Post() // this and @Get may not have a unique URL but methods are different making both different
-  public create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create({
-      title: 'asdf',
-      description: 'asdf',
-      status: 'OPEN',
-    });
+  public create(@Body() taskData: CreateTaskDto): ITask {
+    return this.taskService.create(taskData);
   }
 }
