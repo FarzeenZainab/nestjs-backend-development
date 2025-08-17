@@ -1,9 +1,21 @@
-import { Body, Controller, Get, NotFoundException, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { ITask } from './task.model';
 import { CreateTaskDto } from './create-task.dto';
 import { CreateFindOneDto } from './create-find-one.dto';
 import { UpdateStatusDto } from './update-status.dto';
+import { deleteTaskDto } from './delete-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -40,5 +52,13 @@ export class TasksController {
     const task = this.findOneOrFail(params.id);
     task.status = body.status;
     return task;
+  }
+
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT) // typical response returned when you delete something
+  public deleteTask(@Param() params: deleteTaskDto): void {
+    // using this method to make sure an exception is thrown when a task is not found.
+    const task = this.findOneOrFail(params.id);
+    this.taskService.delete(task.id);
   }
 }
