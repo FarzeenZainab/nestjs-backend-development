@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsNumberString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateFindOneDto {
-  @IsNumberString()
+  @IsString()
   @IsNotEmpty()
   @IsUUID()
   id: string;

@@ -296,3 +296,11 @@ The pipes can be globally registered in the main.ts file in the bootstrap functi
 Incase of validation error, an exception will be thrown.
 
 We can start with configuring the validation pipe globally in the bootstrap function. This will validate the data
+
+### Updating Resource using PATCH
+
+The PATCH method updates the specific properties of a resource instead of a full update like PUT.
+
+We first have to find the resource using the ID and then update the properties.
+
+Params and Body can be of different types, and we can use DTOs to define the expected structure for each.
