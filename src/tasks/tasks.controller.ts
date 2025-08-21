@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { ITask } from './task.model';
@@ -16,6 +17,7 @@ import { CreateTaskDto } from './create-task.dto';
 import { CreateFindOneDto } from './create-find-one.dto';
 import { UpdateStatusDto } from './update-status.dto';
 import { deleteTaskDto } from './delete-task.dto';
+import { CreateIDDTO, UpdateTaskDTO } from './update-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -45,6 +47,19 @@ export class TasksController {
   @Post() // this and @Get may not have a unique URL but methods are different making both different
   public create(@Body() taskData: CreateTaskDto): ITask {
     return this.taskService.create(taskData);
+  }
+
+  @Put('/:id')
+  public updateTask(@Param() params: CreateIDDTO, @Body() body: UpdateTaskDTO): ITask[] {
+    let task = this.findOneOrFail(params.id);
+
+    task = {
+      id: task.id,
+      title: body.title || task.title,
+      description: body.description || task.description,
+      status: body.status || task.status,
+    };
+    return this.taskService.update(task);
   }
 
   @Patch('/:id/status')

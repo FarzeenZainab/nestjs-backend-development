@@ -304,3 +304,20 @@ The PATCH method updates the specific properties of a resource instead of a full
 We first have to find the resource using the ID and then update the properties.
 
 Params and Body can be of different types, and we can use DTOs to define the expected structure for each.
+
+### Adding Mapped Types to reuse DTOs
+When defining the DTO of a controller which do a full update we can use mapped types. This lets use reuse the
+DTOs defined for CREATE method. The reason to use it is to reuse the types and decorators already defined in the create DTO because they will be mostly the same for update DTO.
+
+To work with mapped types we have to install it.
+
+Nest provides several utility functiions that perform type transformations to make this task more convenient.
+
+#### Partails
+When building input validation types (also called DTOs), it's often useful to build create and update variations on the same type.
+
+For example: the create variant may require all fields, while the update variant may make all fields optional.
+
+Nest provides the PartialTyp() utility function to make this task easier and minimize boilerplate.
+
+The PartialType() function returns a type (class) with all the properties of the input type set to optional.
