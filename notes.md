@@ -306,6 +306,7 @@ We first have to find the resource using the ID and then update the properties.
 Params and Body can be of different types, and we can use DTOs to define the expected structure for each.
 
 ### Adding Mapped Types to reuse DTOs
+
 When defining the DTO of a controller which do a full update we can use mapped types. This lets use reuse the
 DTOs defined for CREATE method. The reason to use it is to reuse the types and decorators already defined in the create DTO because they will be mostly the same for update DTO.
 
@@ -314,6 +315,7 @@ To work with mapped types we have to install it.
 Nest provides several utility functiions that perform type transformations to make this task more convenient.
 
 #### Partails
+
 When building input validation types (also called DTOs), it's often useful to build create and update variations on the same type.
 
 For example: the create variant may require all fields, while the update variant may make all fields optional.
@@ -321,3 +323,75 @@ For example: the create variant may require all fields, while the update variant
 Nest provides the PartialTyp() utility function to make this task easier and minimize boilerplate.
 
 The PartialType() function returns a type (class) with all the properties of the input type set to optional.
+
+More on mapped types: https://docs.nestjs.com/techniques/validation#mapped-types
+
+### Difference between Domain Exception and HTTP Exception:
+
+#### Domain Errors:
+
+Definition: Errors that happen in the business logic (domain layer), independent of how the application communicates with the outside world (like HTTP, GraphQL, gRPC etc.).
+
+Where they occur: Inside your domain services, entities, use cases - the "core" of the application.
+
+Examples:
+
+- Trying to withdraw more money than the account balance -> `InsufficientFundsError`
+- Registering a with an email that already exists -> `UserAlreadyExistsError`
+- Booking a sear on a flight that's already takes -> `SeatAlreadyBookedError`
+
+Purpose: They express rules of the problem space (the business domain)
+Key point: Domain errors don't care whether you are using HTTP, Websockets or any other protocol. They're universal to your business rules.
+
+#### HTTP Errors:
+
+Definition: Errors specific to the transport layer (HTTP protocol), usually express as
+status code (400, 404, 500, etc.)
+
+Where they occur: In the controller or adapters that handle requests/responses
+
+Examples:
+
+- 404 Not Found: When a requested resource does not exist
+- 400 Bad Request: When input validation fails
+- 401 Unauthorized: When no valid authentication token is provided
+- 500 Internal server error: unexpected errors not explicitly handled
+
+Purpose: They communicate issues to the client (API consumer) in a protocol-standard way.
+
+Key Point: HTTP errors are about how your system talks to the outside world, not about the business rules themselves.
+
+#### If errors are errors why separate into domain and http errors
+
+The reason has to with separation of concerns and reusability of your code.
+
+Think of it this way:
+Imagine you have a toy shop
+
+1. Domain error = A rule inside your shop.
+
+- Example: 'You can't buy a toy if you don't have enough money'
+- This is true no matter what. It's just the shop's rule
+
+2. HTTP Error = How you tell the customer about that rule when they order online.
+
+- Example: The website shows a red message: ❌ You don't have enough money (Error 400)
+
+Why separate?
+Because tomorrow you might sell toys in different ways:
+
+- Website (HTTP)
+- Mobile app (maybe GraphQL)
+- In-person at the counter (no HTTP at all)
+
+The rule ("not enough money") stays the same everywhere (domain error).
+
+But the message you give depends on how they talk to you:
+
+- On website -> 400 Bad request
+- On mobile -> "error": "INSUFFICIENT_FUNDS"
+- In person -> You say: "Sorry kid, you don't have enough money"
+
+So:
+Domain error = the rule itself
+HTTP error = how you explain that rule over the internet
