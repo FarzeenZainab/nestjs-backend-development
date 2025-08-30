@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { ITask } from './task.model';
+import { ITask, TaskStatuses } from './task.model';
 import { CreateTaskDto } from './create-task.dto';
 import { randomUUID } from 'crypto';
+import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
 
 @Injectable()
 export class TasksService {
   private tasks: ITask[] = [];
+
+  private isValidStatusTransition(currentStatus: TaskStatuses, newStatus: TaskStatuses): boolean {
+    const statusOrder = [TaskStatuses.OPEN, TaskStatuses.IN_PROGRESS, TaskStatuses.DONE];
+
+    return statusOrder.indexOf(currentStatus) <= statusOrder.indexOf(newStatus);
+  }
 
   findAll(): ITask[] {
     return this.tasks;
@@ -30,7 +37,12 @@ export class TasksService {
   update(taskData: ITask) {
     const updatedTasks = this.tasks.map((task) => {
       if (task.id === taskData.id) {
-        return taskData;
+        if (taskData.status && this.isValidStatusTransition(task.status, taskData.status)) {
+          return taskData;
+        } else {
+          // busniess logic exception
+          throw new WrongTaskStatusException();
+        }
       }
       return task;
     });
