@@ -395,3 +395,56 @@ But the message you give depends on how they talk to you:
 So:
 Domain error = the rule itself
 HTTP error = how you explain that rule over the internet
+
+### Difference between Static and Dynamic Modules:
+
+#### Static Module:
+
+Definition: A normal module, always the same
+Does not read configurations variables
+Best for: Features/services that don't change per project
+
+example:
+
+```ts
+@Module({
+  providers: [CatsService],
+  controllers: [CatsController],
+  exports: [CatsService], // share with others
+})
+export class CatsModule {}
+```
+
+Always works the same wherever it's imported
+
+#### Dynamic Module:
+
+Definition: A module that can be configured at runtime.
+Takes options when importing.
+Best for: Modules that depend on values like API Keys, DB URLS, env configs
+
+```ts
+@Module({})
+export class DatabaseModule {
+  static register(options: { uri: string }): DynamicModule {
+    return {
+      module: DatabaseModule,
+      providers: [{ provide: 'DATABASE_URI', useValue: options.uri }],
+      exports: ['DATABASE_URI'],
+    };
+  }
+}
+```
+
+```ts
+@Module({
+  imports: [DatabaseModule.register({ uri: 'mongodb://localhost/mydb' })],
+})
+export class AppModule {}
+```
+
+Configurable each time you import it.
+
+QUICK ANALOGY:
+Static Module: A fixed restaurant menu (you can only order what's in the menu)
+Dynamic Module: A customizable restaurant (you can tell the chef what ingredients you want)
